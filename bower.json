@@ -2,7 +2,8 @@
     "name": "traffic-accident-reports",
     "dependencies": {
         "jquery": "",
-        "heatmap.js.bower": ""
+        "heatmap.js.bower": "",
+        "leaflet": ""
     },
     "private": true
 }
