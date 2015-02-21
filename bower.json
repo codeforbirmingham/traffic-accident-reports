@@ -1,0 +1,7 @@
+{
+    "name": "traffic-accident-reports",
+    "dependencies": {
+        "jquery": ""
+    },
+    "private": true
+}
