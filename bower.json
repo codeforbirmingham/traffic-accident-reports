@@ -1,7 +1,8 @@
 {
     "name": "traffic-accident-reports",
     "dependencies": {
-        "jquery": ""
+        "jquery": "",
+        "heatmap.js.bower": ""
     },
     "private": true
 }
