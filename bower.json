@@ -2,7 +2,8 @@
     "name": "traffic-accident-reports",
     "dependencies": {
         "jquery": "",
-        "leaflet": ""
+        "leaflet": "",
+        "crossfilter": ""
     },
     "private": true
 }
