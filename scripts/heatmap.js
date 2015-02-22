@@ -53,5 +53,11 @@
         TrafficAccidents.filterByYear(year);
         redraw();
     });
+    $("#select-cutoff").on("change", function () {
+        var cutoff;
+        cutoff = $(this).val();
+        TrafficAccidents.setCutoff(cutoff);
+        redraw();
+    });
 
 }());

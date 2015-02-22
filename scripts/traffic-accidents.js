@@ -1,7 +1,7 @@
 (function () {
    "use strict";
 
-    var data, dimensions, fetch, filterByYear, groupByLocation;
+    var data, dimensions, fetch, filterByYear, groupByLocation, cutoff, setCutoff;
 
     data = crossfilter();
     dimensions = {};
@@ -55,13 +55,20 @@
             return {
                 count: 0
             }
-        }).all();
+        }).top(cutoff);
+    };
+
+    cutoff = 50;
+
+    setCutoff = function (value) {
+        cutoff = value;
     };
 
     window["TrafficAccidents"] = {
         fetch: fetch,
         filterByYear: filterByYear,
-        groupByLocation: groupByLocation
+        groupByLocation: groupByLocation,
+        setCutoff: setCutoff
     };
 
 }());
