@@ -5,6 +5,10 @@
 
         var trafficAccidents, locationDimension, trafficAccidentsByLocation, baseLayer, heatmapLayer, map, heatmapData;
 
+     // Hide loader and show map.
+        $("#loader").hide();
+        $("#heatmap").show();
+
         trafficAccidents = crossfilter(trafficAccidentFacts);
 
      // Create dimension on location.
