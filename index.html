@@ -4,6 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Traffic Accident Reports</title>
+        <link rel="stylesheet" href="styles/normalize.css">
+        <link rel="stylesheet" href="styles/skeleton.css">
         <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
         <link rel="stylesheet" href="styles/heatmap.css">
     </head>
@@ -11,7 +13,12 @@
         <div id="loader">
             <img src="images/ajax-loader.gif" alt="Loading data...">
         </div>
-        <div id="heatmap"></div>
+        <div id="mainframe" class="row">
+            <div id="heatmap" class="nine columns">
+            </div>
+            <div id="filter-pane" class="three columns">
+            </div>
+        </div>
         <script src="vendor/jquery/jquery.min.js"></script>
         <script src="vendor/crossfilter/crossfilter.min.js"></script>
         <script src="vendor/leaflet/leaflet.js"></script>

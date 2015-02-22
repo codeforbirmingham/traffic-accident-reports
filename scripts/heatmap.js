@@ -7,7 +7,7 @@
 
      // Hide loader and show map.
         $("#loader").hide();
-        $("#heatmap").show();
+        $("#mainframe").show();
 
         trafficAccidents = crossfilter(trafficAccidentFacts);
 

@@ -1,4 +1,4 @@
-html, body {
+html, body, .row {
     height: 100%;
 }
 
@@ -8,7 +8,10 @@ html, body {
     left: 50%;
 }
 
-#heatmap {
+#mainframe {
     display: none;
+}
+
+#heatmap {
     height: 100%;
 }
