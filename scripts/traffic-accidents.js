@@ -55,6 +55,8 @@
             return {
                 count: 0
             }
+        }).order(function (p) {
+            return p.count;
         }).top(cutoff);
     };
 
