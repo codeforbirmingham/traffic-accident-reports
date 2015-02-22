@@ -1,38 +1,49 @@
 (function () {
    "use strict";
 
-    var data, dimensions, fetch, groupByLocation;
+    var data, dimensions, fetch, filterByYear, groupByLocation;
 
     data = crossfilter();
     dimensions = {};
 
     fetch = function (callback) {
         Socrata.query({
-            $select: "location,coordinates",
+            $select: "location,coordinates,crash_date",
             $limit: Socrata.limit
         }, function (err, result) {
             if (err !== null) {
-                callback(err, null);
+                callback(err);
             } else {
              // Filter out accidents without location. Socrata doesn't seem
              // to understand `$where=coordinates IS NOT NULL`.
                 result = result.filter(function (trafficAccident) {
                     return trafficAccident.hasOwnProperty("coordinates");
                 });
+             // Add data to Crossfilter.
                 data.add(result);
-             // Create dimension on location.
+             // Create dimensions.
                 dimensions.location = data.dimension(function (trafficAccident) {
                     return trafficAccident.location;
+                });
+                dimensions.year = data.dimension(function (trafficAccident) {
+                    var date;
+                    date = new Date(trafficAccident.crash_date);
+                    return date.getFullYear();
                 });
                 callback(null);
             }
         });
     };
 
+    filterByYear = function (year) {
+        if (year === "") {
+            year = null;
+        }
+        dimensions.year.filter(year);
+    };
+
     groupByLocation = function () {
-        var byLocation;
-     // MapReduce: group by location, reduce to count while keeping lat and lng.
-        byLocation = dimensions.location.group().reduce(function (p, v) {
+        return dimensions.location.group().reduce(function (p, v) {
             p.lat = v.coordinates.latitude;
             p.lng = v.coordinates.longitude;
             p.count = p.count + 1;
@@ -44,12 +55,12 @@
             return {
                 count: 0
             }
-        });
-        return byLocation.all();
+        }).all();
     };
 
     window["TrafficAccidents"] = {
         fetch: fetch,
+        filterByYear: filterByYear,
         groupByLocation: groupByLocation
     };
 

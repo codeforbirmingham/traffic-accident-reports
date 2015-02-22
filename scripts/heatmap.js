@@ -38,10 +38,19 @@
         });
     };
 
+ // Fetch initial data.
     TrafficAccidents.fetch(function () {
      // Hide loader and show map.
         $("#loader").hide();
         $("#mainframe").css("visibility", "visible");
+        redraw();
+    });
+
+ // Assign handlers.
+    $("#select-year").on("change", function () {
+        var year;
+        year = $(this).val();
+        TrafficAccidents.filterByYear(year);
         redraw();
     });
 
