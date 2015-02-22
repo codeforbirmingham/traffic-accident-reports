@@ -27,9 +27,15 @@
             }
         });
 
-        baseLayer = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: "...",
-            maxZoom: 18
+        baseLayer = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/normal.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
+            attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
+            subdomains: '1234',
+            mapID: 'newest',
+            app_id: 'oBrjPtnB5CZNkvOVmmqw',
+            app_code: 'TPBtO9fTES--LhkVo5sKeA',
+            base: 'base',
+            minZoom: 0,
+            maxZoom: 20
         });
 
         heatmapLayer = new HeatmapOverlay({});
