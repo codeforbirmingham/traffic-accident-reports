@@ -14,7 +14,9 @@
         maxZoom: 20
     });
 
-    heatmapLayer = new HeatmapOverlay({});
+    heatmapLayer = new HeatmapOverlay({
+        radius: 30
+    });
 
     map = L.map("heatmap", {
         center: L.latLng(33.5250, -86.8130),
@@ -29,8 +31,7 @@
             return {
                 lat: location.value.lat,
                 lng: location.value.lng,
-                value: location.key,
-                radius: location.value.count
+                value: location.key
             };
         });
         heatmapLayer.setData({
