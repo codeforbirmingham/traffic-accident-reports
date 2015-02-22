@@ -1,35 +1,56 @@
 (function () {
    "use strict";
 
-   var getAllRows, getTrafficAccidents;
+    var data, dimensions, fetch, groupByLocation;
 
-   getAllRows = function (callback) {
-        Socrata.query({
-            $limit: Socrata.limit
-        }, callback);
-    };
+    data = crossfilter();
+    dimensions = {};
 
-    getTrafficAccidents = function (callback) {
+    fetch = function (callback) {
         Socrata.query({
             $select: "location,coordinates",
             $limit: Socrata.limit
-        }, function (err, data) {
+        }, function (err, result) {
             if (err !== null) {
                 callback(err, null);
             } else {
              // Filter out accidents without location. Socrata doesn't seem
              // to understand `$where=coordinates IS NOT NULL`.
-                data = data.filter(function (trafficAccident) {
+                result = result.filter(function (trafficAccident) {
                     return trafficAccident.hasOwnProperty("coordinates");
                 });
-                callback(null, data);
+                data.add(result);
+             // Create dimension on location.
+                dimensions.location = data.dimension(function (trafficAccident) {
+                    return trafficAccident.location;
+                });
+                callback(null);
             }
         });
     };
 
-    window["TrafficAccidents"] =  {
-        getAllRows: getAllRows,
-        getTrafficAccidents: getTrafficAccidents
+    groupByLocation = function () {
+        var byLocation;
+     // MapReduce: group by location, reduce to count while keeping lat and lng.
+        byLocation = dimensions.location.group().reduce(function (p, v) {
+            p.lat = v.coordinates.latitude;
+            p.lng = v.coordinates.longitude;
+            p.count = p.count + 1;
+            return p;
+        }, function (p, v) {
+            p.count = p.count - 1;
+            return p;
+        }, function () {
+            return {
+                count: 0
+            }
+        });
+        return byLocation.all();
+    };
+
+    window["TrafficAccidents"] = {
+        fetch: fetch,
+        groupByLocation: groupByLocation
     };
 
 }());
