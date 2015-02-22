@@ -1,10 +1,11 @@
 (function () {
    "use strict";
 
-    var endpoint, token, req;
+    var endpoint, token, limit, req;
 
     endpoint = "https://brigades.opendatanetwork.com/resource/caz5-9y2j.json";
     token = "iqxU70pZzU1Bo0swgGR4Ad93m";
+    limit = 50000;
 
     req = function (query, callback) {
         var urlParams;
@@ -31,7 +32,9 @@
 
     window["TrafficAccidents"] =  {
         getAllRows: function (callback) {
-            req({}, callback);
+            req({
+                $limit: limit
+            }, callback);
         }
     };
 
