@@ -35,6 +35,23 @@
             req({
                 $limit: limit
             }, callback);
+        },
+        getTrafficAccidents: function (callback) {
+            req({
+                $select: "location,coordinates",
+                $limit: limit
+            }, function (err, data) {
+                if (err !== null) {
+                    callback(err, null);
+                } else {
+                 // Filter out accidents without location. Socrata doesn't seem
+                 // to understand `$where=coordinates IS NOT NULL`.
+                    data = data.filter(function (trafficAccident) {
+                        return trafficAccident.hasOwnProperty("coordinates");
+                    });
+                    callback(null, data);
+                }
+            });
         }
     };
 
