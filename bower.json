@@ -1,9 +1,0 @@
-{
-    "name": "traffic-accident-reports",
-    "dependencies": {
-        "jquery": "",
-        "leaflet": "",
-        "crossfilter": ""
-    },
-    "private": true
-}
