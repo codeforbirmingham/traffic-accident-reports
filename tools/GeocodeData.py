@@ -95,7 +95,7 @@ def process(location):
         print('Caught Error:\n' + str(e))
         return ''
     if response[0] != '(':
-        print('>> Error ' + response)
+        print('>> Error ' + response + ": " + location)
         if response == 'REQUEST_DENIED' or response == 'OVER_QUERY_LIMIT':
             overAPILimit = True
         return ''
