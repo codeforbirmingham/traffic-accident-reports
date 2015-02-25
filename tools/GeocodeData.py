@@ -52,8 +52,8 @@ def main():
                 headers = record
             else:
                 location = record[headers.index('Location')]
-                # drop missing values
-                if 'NO DESCRIPTION AVAILABLE' not in location:
+                # drop missing values and non-intersection-related accidents
+                if not ('NO DESCRIPTION AVAILABLE' in location or location.startswith('Between ')):
                     uniqueLocations.append(location)
     uniqueLocations = list(set(uniqueLocations)) # remove duplicates
     print('>> Identified ' + str(len(uniqueLocations)) + ' unique locations.')
@@ -71,29 +71,12 @@ def main():
         if numAPIRequests >= MAX_API_REQUESTS or overAPILimit:
             print('>> Error: Exceeded API Usage limits. Try again in 24 hours.')
             break
-        # if it happened between two intersections, try each separately
-        if location[:7] == 'Between':
-            twoLocations = location[8:].split(' and ')
-            result1 = process(twoLocations[0])
-            if len(result1) > 0:
-                allGeocodings[location] = result1
-                numSuccess += 1
-            else:
-                result2 = process(twoLocations[1])
-                if len(result2) > 0:
-                    allGeocodings[location] = result2
-                    numSuccess += 1
-                    numAPIRequests += 1
-                else:
-                    numFailure += 1
-        # otherwise it's just one intersection
-        else: 
-            result = process(location) 
-            if len(result) > 0:
-                allGeocodings[location] = result
-                numSuccess += 1
-            else:
-                numFailure += 1
+        result = process(location)
+        if len(result) > 0:
+            allGeocodings[location] = result
+            numSuccess += 1
+        else:
+            numFailure += 1
     print('>> Complete. Successes = ' + str(numSuccess) + ', Failures = ' + str(numFailure)) 
     # Now write the data out to a file
     print('>> Writing geocodings to ' + OUTFILE)
