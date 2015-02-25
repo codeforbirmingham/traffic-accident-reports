@@ -51,7 +51,10 @@ def main():
             if i == 0:
                 headers = record
             else:
-                uniqueLocations.append(record[headers.index('Location')])
+                location = record[headers.index('Location')]
+                # drop missing values
+                if 'NO DESCRIPTION AVAILABLE' not in location:
+                    uniqueLocations.append(location)
     uniqueLocations = list(set(uniqueLocations)) # remove duplicates
     print('>> Identified ' + str(len(uniqueLocations)) + ' unique locations.')
     # Now process the data
@@ -102,16 +105,9 @@ def main():
 # on success: returns '(lat, long)'
 # on failure: returns ''
 def process(location):
-    niceLocation = location.strip().replace('NO DESCRIPTION AVAILABLE', '')
-    if niceLocation.strip() == 'at' or len(niceLocation) == 0:
-        return ''
-    elif niceLocation[:4] == ' at ' and len(niceLocation) > 4:
-        niceLocation = niceLocation.replace(' at ', '')
-    elif niceLocation[-4:] == ' at ' and len(niceLocation) > 4:
-        niceLocation = niceLocation.replace(' at ', '')
-    niceLocation += ' ' + CITY_STATE
+    location += ' ' + CITY_STATE
     try:
-        response = geocodeGoogle(niceLocation)
+        response = geocodeGoogle(location)
     except Exception as e:
         print('Caught Error:\n' + str(e))
         return ''
