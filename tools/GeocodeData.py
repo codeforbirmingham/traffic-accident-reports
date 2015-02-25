@@ -113,11 +113,14 @@ def geocodeGoogle(address):
     rawreply = urlopen(url).read()
     reply = json.loads(rawreply.decode('utf-8'))
     sleep(0.1) # stay under usage limit
-    # assume the first result is correct
-    # round to 6 decimal places (~0.1m precision)
     if reply['status'] == 'OK':
-        return '(' + str(round(reply['results'][0]['geometry']['location']['lat'], 6)) + ', ' + \
-                     str(round(reply['results'][0]['geometry']['location']['lng'], 6)) + ')'
+        # assume the first result is correct, but only include intersections
+        if 'intersection' in reply['results'][0]['types']:
+            # round to 6 decimal places (~0.1m precision)
+            return '(' + str(round(reply['results'][0]['geometry']['location']['lat'], 6)) + ', ' + \
+                         str(round(reply['results'][0]['geometry']['location']['lng'], 6)) + ')'
+        else:
+            return 'NOT_AN_INTERSECTION'
     else:
         return reply['status']
 
