@@ -3,8 +3,9 @@
 ############################################################################
 #
 # File: GeocodeData.py
-# Last Edit: 2015-02-21
+# Last Edit: 2015-02-26
 # Author: Matthew Leeds <mwl458@gmail.com>
+# Contributor: Alexander Grüneberg <alexander.grueneberg@googlemail.com>
 # Purpose: This script reads in traffic accident data provided by the
 # the City of Birmingham in CSV format, cleans up the data a bit, and
 # makes geocoding requests to Google's API.
