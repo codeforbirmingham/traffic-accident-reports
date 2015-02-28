@@ -2,12 +2,12 @@
     "use strict";
 
     Socrata.query({
-        $select: "location,coordinates,crash_date",
+        $select: "location,coordinates,crash_date,day_of_week",
         $limit: Socrata.limit
     }, function (err, result) {
 
-        var data, coordinates, years, baseLayer, clusterLayer, map, redraw,
-            yearSelector;
+        var data, coordinates, years, dayOfWeekNames, daysOfWeek, baseLayer,
+            clusterLayer, map, redraw;
 
      // Hide loader and show map.
         $("#loader").hide();
@@ -30,6 +30,11 @@
             var date;
             date = new Date(record.crash_date);
             return date.getFullYear();
+        });
+        dayOfWeekNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        daysOfWeek = data.dimension(function (record) {
+         // Reformat for sorting.
+            return dayOfWeekNames.indexOf(record.day_of_week);
         });
 
      // Prepare map.
@@ -64,10 +69,19 @@
             });
         };
 
-        yearSelector = dc.pieChart("#year-selector");
-        yearSelector.dimension(years)
-                    .group(years.group())
-                    .on("filtered", redraw);
+     // Prepare charts.
+        dc.pieChart("#year-selector")
+          .dimension(years)
+          .group(years.group())
+          .on("filtered", redraw);
+
+        dc.rowChart("#day-of-week-selector")
+          .dimension(daysOfWeek)
+          .group(daysOfWeek.group())
+          .label(function (d) {
+              return dayOfWeekNames[d.key];
+           })
+          .on("filtered", redraw);
 
         redraw();
         dc.renderAll();
