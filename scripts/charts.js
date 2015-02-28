@@ -73,6 +73,9 @@
         dc.pieChart("#year-selector")
           .dimension(years)
           .group(years.group())
+          .title(function (d) {
+              return d.value;
+           })
           .on("filtered", redraw);
 
         dc.rowChart("#day-of-week-selector")
@@ -80,6 +83,9 @@
           .group(daysOfWeek.group())
           .label(function (d) {
               return dayOfWeekNames[d.key];
+           })
+          .title(function (d) {
+              return d.value;
            })
           .on("filtered", redraw);
 
