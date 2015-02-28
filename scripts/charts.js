@@ -6,7 +6,8 @@
         $limit: Socrata.limit
     }, function (err, result) {
 
-        var data, coordinates, years, baseLayer, clusterLayer, map, redraw;
+        var data, coordinates, years, baseLayer, clusterLayer, map, redraw,
+            yearSelector;
 
      // Hide loader and show map.
         $("#loader").hide();
@@ -61,19 +62,13 @@
             });
         };
 
-     // Assign handlers.
-        $("#select-year").on("change", function () {
-            var selectedYear;
-            selectedYear = $(this).val();
-            if (selectedYear === "") {
-                selectedYear = null;
-            }
-            years.filter(selectedYear);
-            redraw();
-        });
+        yearSelector = dc.pieChart("#year-selector");
+        yearSelector.dimension(years)
+                    .group(years.group())
+                    .on("filtered", redraw);
 
-     // Initial draw.
         redraw();
+        dc.renderAll();
 
     });
 
