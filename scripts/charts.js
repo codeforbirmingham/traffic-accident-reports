@@ -44,7 +44,9 @@
             maxZoom: 20
         });
 
-        clusterLayer = L.markerClusterGroup();
+        clusterLayer = L.markerClusterGroup({
+            singleMarkerMode: true
+        });
 
         map = L.map("map", {
             center: L.latLng(33.5250, -86.8130),
