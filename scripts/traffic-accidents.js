@@ -1,7 +1,7 @@
 (function () {
    "use strict";
 
-    var data, dimensions, fetch, filterByYear, getHeatmapData, getHeatmapMax;
+    var data, dimensions, fetch, filterByYear, getLocations;
 
     data = crossfilter();
     dimensions = {};
@@ -45,19 +45,14 @@
         dimensions.year.filter(year);
     };
 
-    getHeatmapData = function () {
+    getLocations = function () {
         return dimensions.coordinates.top(Infinity);
-    };
-
-    getHeatmapMax = function () {
-        return dimensions.coordinates.group().reduceCount().top(1)[0].value;
     };
 
     window["TrafficAccidents"] = {
         fetch: fetch,
         filterByYear: filterByYear,
-        getHeatmapData: getHeatmapData,
-        getHeatmapMax: getHeatmapMax
+        getLocations: getLocations
     };
 
 }());

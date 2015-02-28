@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var baseLayer, heatmapLayer, map, redraw;
+    var baseLayer, clusterLayer, map, redraw;
 
     baseLayer = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/normal.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
         attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
@@ -14,29 +14,21 @@
         maxZoom: 20
     });
 
-    heatmapLayer = new HeatmapOverlay({
-        radius: 30
-    });
+    clusterLayer = L.markerClusterGroup();
 
-    map = L.map("heatmap", {
+    map = L.map("map", {
         center: L.latLng(33.5250, -86.8130),
         zoom: 12,
         minZoom: 12,
-        layers: [baseLayer, heatmapLayer]
+        layers: [baseLayer, clusterLayer]
     });
 
     redraw = function () {
-        var heatmapData;
-        heatmapData = TrafficAccidents.getHeatmapData().map(function (location) {
-            return {
-                lat: location.coordinates.latitude,
-                lng: location.coordinates.longitude,
-                value: 1
-            };
-        });
-        heatmapLayer.setData({
-            max: TrafficAccidents.getHeatmapMax(),
-            data: heatmapData
+        clusterLayer.clearLayers();
+        TrafficAccidents.getLocations().forEach(function (location) {
+            var mark;
+            mark = L.marker([location.coordinates.latitude, location.coordinates.longitude]);
+            clusterLayer.addLayer(mark);
         });
     };
 

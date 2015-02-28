@@ -7,14 +7,15 @@
         <link rel="stylesheet" href="styles/normalize.css">
         <link rel="stylesheet" href="styles/skeleton.css">
         <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-        <link rel="stylesheet" href="styles/heatmap.css">
+        <link rel="stylesheet" href="vendor/leaflet.markercluster/MarkerCluster.Default.css">
+        <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
         <div id="loader">
             <img src="images/ajax-loader.gif" alt="Loading data...">
         </div>
         <div id="mainframe" class="row">
-            <div id="heatmap" class="nine columns">
+            <div id="map" class="nine columns">
             </div>
             <div id="filter-pane" class="three columns">
                 <label for="select-year">Year</label>
@@ -29,8 +30,7 @@
         <script src="vendor/jquery/jquery.min.js"></script>
         <script src="vendor/crossfilter/crossfilter.min.js"></script>
         <script src="vendor/leaflet/leaflet.js"></script>
-        <script src="vendor/heatmap.js/heatmap.min.js"></script>
-        <script src="vendor/heatmap.js/leaflet-heatmap.js"></script>
+        <script src="vendor/leaflet.markercluster/leaflet.markercluster.js"></script>
         <script src="scripts/socrata.js"></script>
         <script src="scripts/traffic-accidents.js"></script>
         <script src="scripts/map.js"></script>

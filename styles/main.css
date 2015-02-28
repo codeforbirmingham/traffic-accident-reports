@@ -12,6 +12,6 @@ html, body, .row {
     visibility: hidden;
 }
 
-#heatmap {
+#map {
     height: 100%;
 }
