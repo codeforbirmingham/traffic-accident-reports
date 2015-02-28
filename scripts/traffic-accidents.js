@@ -1,7 +1,7 @@
 (function () {
    "use strict";
 
-    var data, dimensions, fetch, filterByYear, groupByLocation, cutoff, setCutoff;
+    var data, dimensions, fetch, filterByYear, getHeatmapData, getHeatmapMax;
 
     data = crossfilter();
     dimensions = {};
@@ -25,6 +25,9 @@
                 dimensions.location = data.dimension(function (trafficAccident) {
                     return trafficAccident.location;
                 });
+                dimensions.coordinates = data.dimension(function (trafficAccident) {
+                    return [trafficAccident.coordinates.latitude, trafficAccident.coordinates.longitude];
+                });
                 dimensions.year = data.dimension(function (trafficAccident) {
                     var date;
                     date = new Date(trafficAccident.crash_date);
@@ -42,35 +45,19 @@
         dimensions.year.filter(year);
     };
 
-    groupByLocation = function () {
-        return dimensions.location.group().reduce(function (p, v) {
-            p.lat = v.coordinates.latitude;
-            p.lng = v.coordinates.longitude;
-            p.count = p.count + 1;
-            return p;
-        }, function (p, v) {
-            p.count = p.count - 1;
-            return p;
-        }, function () {
-            return {
-                count: 0
-            }
-        }).order(function (p) {
-            return p.count;
-        }).top(cutoff);
+    getHeatmapData = function () {
+        return dimensions.coordinates.top(Infinity);
     };
 
-    cutoff = 50;
-
-    setCutoff = function (value) {
-        cutoff = value;
+    getHeatmapMax = function () {
+        return dimensions.coordinates.group().reduceCount().top(1)[0].value;
     };
 
     window["TrafficAccidents"] = {
         fetch: fetch,
         filterByYear: filterByYear,
-        groupByLocation: groupByLocation,
-        setCutoff: setCutoff
+        getHeatmapData: getHeatmapData,
+        getHeatmapMax: getHeatmapMax
     };
 
 }());

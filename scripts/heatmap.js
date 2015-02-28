@@ -27,14 +27,15 @@
 
     redraw = function () {
         var heatmapData;
-        heatmapData = TrafficAccidents.groupByLocation().map(function (location) {
+        heatmapData = TrafficAccidents.getHeatmapData().map(function (location) {
             return {
-                lat: location.value.lat,
-                lng: location.value.lng,
-                value: location.key
+                lat: location.coordinates.latitude,
+                lng: location.coordinates.longitude,
+                value: 1
             };
         });
         heatmapLayer.setData({
+            max: TrafficAccidents.getHeatmapMax(),
             data: heatmapData
         });
     };
@@ -52,12 +53,6 @@
         var year;
         year = $(this).val();
         TrafficAccidents.filterByYear(year);
-        redraw();
-    });
-    $("#select-cutoff").on("change", function () {
-        var cutoff;
-        cutoff = $(this).val();
-        TrafficAccidents.setCutoff(cutoff);
         redraw();
     });
 
