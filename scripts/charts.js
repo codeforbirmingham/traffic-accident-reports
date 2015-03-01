@@ -6,8 +6,8 @@
         $limit: Socrata.limit
     }, function (err, result) {
 
-        var data, coordinates, years, dayOfWeekNames, daysOfWeek, baseLayer,
-            clusterLayer, map, redraw;
+        var data, coordinates, years, monthNames, months, dayOfWeekNames,
+            daysOfWeek, baseLayer, clusterLayer, map, redraw;
 
      // Hide loader and show map.
         $("#loader").hide();
@@ -30,6 +30,12 @@
             var date;
             date = new Date(record.crash_date);
             return date.getFullYear();
+        });
+        monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        months = data.dimension(function (record) {
+            var date;
+            date = new Date(record.crash_date);
+            return date.getMonth();
         });
         dayOfWeekNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         daysOfWeek = data.dimension(function (record) {
@@ -77,6 +83,25 @@
               return d.value;
            })
           .on("filtered", redraw);
+
+        dc.rowChart("#month-selector")
+          .dimension(months)
+          .group(months.group())
+          .elasticX(true)
+          .label(function (d) {
+              return monthNames[d.key].substr(0, 3);
+           })
+          .title(function (d) {
+              return d.value;
+           })
+          .on("filtered", redraw)
+          .margins({
+              top: 0,
+              left: 5,
+              bottom: 30,
+              right: 10
+           })
+          .xAxis().ticks(4);
 
         dc.rowChart("#day-of-week-selector")
           .dimension(daysOfWeek)
