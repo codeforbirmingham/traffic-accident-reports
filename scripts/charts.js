@@ -6,7 +6,7 @@
         $limit: Socrata.limit
     }, function (err, result) {
 
-        var data, coordinates, years, monthNames, months, dayOfWeekNames,
+        var data, coordinates, years, monthNames, months, days, dayOfWeekNames,
             daysOfWeek, baseLayer, clusterLayer, map, redraw;
 
      // Hide loader and show map.
@@ -36,6 +36,11 @@
             var date;
             date = new Date(record.crash_date);
             return date.getMonth();
+        });
+        days = data.dimension(function (record) {
+            var date;
+            date = new Date(record.crash_date);
+            return date.getDate();
         });
         dayOfWeekNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         daysOfWeek = data.dimension(function (record) {
@@ -90,6 +95,25 @@
           .elasticX(true)
           .label(function (d) {
               return monthNames[d.key].substr(0, 3);
+           })
+          .title(function (d) {
+              return d.value;
+           })
+          .on("filtered", redraw)
+          .margins({
+              top: 0,
+              left: 5,
+              bottom: 30,
+              right: 10
+           })
+          .xAxis().ticks(4);
+
+        dc.rowChart("#day-selector")
+          .dimension(days)
+          .group(days.group())
+          .elasticX(true)
+          .label(function (d) {
+              return d.key;
            })
           .title(function (d) {
               return d.value;
