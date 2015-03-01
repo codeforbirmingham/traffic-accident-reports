@@ -81,6 +81,7 @@
         dc.rowChart("#day-of-week-selector")
           .dimension(daysOfWeek)
           .group(daysOfWeek.group())
+          .elasticX(true)
           .label(function (d) {
               return dayOfWeekNames[d.key].substr(0, 3);
            })
