@@ -10,4 +10,9 @@
 
 #map {
     height: 500px;
+    margin-bottom: 25px;
+}
+
+.chart a {
+    cursor: pointer;
 }

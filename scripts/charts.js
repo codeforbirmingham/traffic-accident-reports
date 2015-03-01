@@ -7,7 +7,7 @@
     }, function (err, result) {
 
         var data, coordinates, years, monthNames, months, days, dayOfWeekNames,
-            daysOfWeek, baseLayer, clusterLayer, map, redraw, chartColor;
+            daysOfWeek, baseLayer, clusterLayer, map, redraw, chartColor, charts;
 
      // Hide loader and show map.
         $("#loader").hide();
@@ -83,76 +83,86 @@
         chartColor = d3.scale.ordinal().range(["#44afe1"]);
 
      // Prepare charts.
-        dc.pieChart("#year-selector")
-          .dimension(years)
-          .group(years.group())
-          .title(function (d) {
-              return d.value;
-           })
-          .colors(chartColor)
-          .on("filtered", redraw);
+        charts = {};
 
-        dc.rowChart("#month-selector")
-          .height(336)
-          .dimension(months)
-          .group(months.group())
-          .elasticX(true)
-          .label(function (d) {
-              return monthNames[d.key].substr(0, 3);
-           })
-          .title(function (d) {
-              return d.value;
-           })
-          .colors(chartColor)
-          .on("filtered", redraw)
-          .margins({
-              top: 0,
-              left: 5,
-              bottom: 30,
-              right: 10
-           })
-          .xAxis().ticks(4);
+        charts.yearSelector = dc.pieChart("#year-selector");
+        charts.yearSelector.dimension(years)
+                           .group(years.group())
+                           .title(function (d) {
+                               return d.value;
+                            })
+                           .colors(chartColor)
+                           .on("filtered", redraw);
 
-        dc.rowChart("#day-selector")
-          .height(868)
-          .dimension(days)
-          .group(days.group())
-          .elasticX(true)
-          .label(function (d) {
-              return d.key;
-           })
-          .title(function (d) {
-              return d.value;
-           })
-          .colors(chartColor)
-          .on("filtered", redraw)
-          .margins({
-              top: 0,
-              left: 5,
-              bottom: 30,
-              right: 10
-           })
-          .xAxis().ticks(4);
+        charts.monthSelector = dc.rowChart("#month-selector");
+        charts.monthSelector.height(336)
+                            .dimension(months)
+                            .group(months.group())
+                            .elasticX(true)
+                            .label(function (d) {
+                                return monthNames[d.key].substr(0, 3);
+                             })
+                            .title(function (d) {
+                                return d.value;
+                             })
+                            .colors(chartColor)
+                            .margins({
+                                top: 0,
+                                left: 5,
+                                bottom: 30,
+                                right: 10
+                             })
+                            .on("filtered", redraw);
+        charts.monthSelector.xAxis().ticks(4);
 
-        dc.rowChart("#day-of-week-selector")
-          .dimension(daysOfWeek)
-          .group(daysOfWeek.group())
-          .elasticX(true)
-          .label(function (d) {
-              return dayOfWeekNames[d.key].substr(0, 3);
-           })
-          .title(function (d) {
-              return d.value;
-           })
-          .colors(chartColor)
-          .on("filtered", redraw)
-          .margins({
-              top: 0,
-              left: 5,
-              bottom: 30,
-              right: 10
-           })
-          .xAxis().ticks(4);
+        charts.daySelector = dc.rowChart("#day-selector");
+        charts.daySelector.height(868)
+                          .dimension(days)
+                          .group(days.group())
+                          .elasticX(true)
+                          .label(function (d) {
+                              return d.key;
+                           })
+                          .title(function (d) {
+                              return d.value;
+                           })
+                          .colors(chartColor)
+                          .margins({
+                              top: 0,
+                              left: 5,
+                              bottom: 30,
+                              right: 10
+                           })
+                          .on("filtered", redraw);
+        charts.daySelector.xAxis().ticks(4);
+
+        charts.dayOfWeekSelector = dc.rowChart("#day-of-week-selector");
+        charts.dayOfWeekSelector.dimension(daysOfWeek)
+                                .group(daysOfWeek.group())
+                                .elasticX(true)
+                                .label(function (d) {
+                                    return dayOfWeekNames[d.key].substr(0, 3);
+                                 })
+                                .title(function (d) {
+                                    return d.value;
+                                 })
+                                .colors(chartColor)
+                                .margins({
+                                    top: 0,
+                                    left: 5,
+                                    bottom: 30,
+                                    right: 10
+                                 })
+                                .on("filtered", redraw);
+        charts.dayOfWeekSelector.xAxis().ticks(4);
+
+     // Prepare reset buttons.
+        $(".chart a").on("click", function () {
+            var chart;
+            chart = $(this).data("chart");
+            charts[chart].filterAll();
+            dc.redrawAll();
+        });
 
         redraw();
         dc.renderAll();
