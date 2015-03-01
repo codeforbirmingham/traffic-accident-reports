@@ -7,7 +7,7 @@
     }, function (err, result) {
 
         var data, coordinates, years, monthNames, months, days, dayOfWeekNames,
-            daysOfWeek, baseLayer, clusterLayer, map, redraw;
+            daysOfWeek, baseLayer, clusterLayer, map, redraw, chartColor;
 
      // Hide loader and show map.
         $("#loader").hide();
@@ -80,6 +80,8 @@
             });
         };
 
+        chartColor = d3.scale.ordinal().range(["#44afe1"]);
+
      // Prepare charts.
         dc.pieChart("#year-selector")
           .dimension(years)
@@ -87,6 +89,7 @@
           .title(function (d) {
               return d.value;
            })
+          .colors(chartColor)
           .on("filtered", redraw);
 
         dc.rowChart("#month-selector")
@@ -100,6 +103,7 @@
           .title(function (d) {
               return d.value;
            })
+          .colors(chartColor)
           .on("filtered", redraw)
           .margins({
               top: 0,
@@ -120,6 +124,7 @@
           .title(function (d) {
               return d.value;
            })
+          .colors(chartColor)
           .on("filtered", redraw)
           .margins({
               top: 0,
@@ -139,6 +144,7 @@
           .title(function (d) {
               return d.value;
            })
+          .colors(chartColor)
           .on("filtered", redraw)
           .margins({
               top: 0,
