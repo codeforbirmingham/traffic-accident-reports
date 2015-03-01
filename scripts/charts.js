@@ -90,6 +90,7 @@
           .on("filtered", redraw);
 
         dc.rowChart("#month-selector")
+          .height(336)
           .dimension(months)
           .group(months.group())
           .elasticX(true)
@@ -109,6 +110,7 @@
           .xAxis().ticks(4);
 
         dc.rowChart("#day-selector")
+          .height(868)
           .dimension(days)
           .group(days.group())
           .elasticX(true)
