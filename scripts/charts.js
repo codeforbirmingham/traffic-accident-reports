@@ -82,12 +82,19 @@
           .dimension(daysOfWeek)
           .group(daysOfWeek.group())
           .label(function (d) {
-              return dayOfWeekNames[d.key];
+              return dayOfWeekNames[d.key].substr(0, 3);
            })
           .title(function (d) {
               return d.value;
            })
-          .on("filtered", redraw);
+          .on("filtered", redraw)
+          .margins({
+              top: 0,
+              left: 5,
+              bottom: 30,
+              right: 10
+           })
+          .xAxis().ticks(4);
 
         redraw();
         dc.renderAll();
