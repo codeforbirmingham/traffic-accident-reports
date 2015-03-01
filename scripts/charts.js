@@ -67,7 +67,7 @@
         map = L.map("map", {
             center: L.latLng(33.5250, -86.8130),
             zoom: 12,
-            minZoom: 12,
+            minZoom: 10,
             layers: [baseLayer, clusterLayer]
         });
 
