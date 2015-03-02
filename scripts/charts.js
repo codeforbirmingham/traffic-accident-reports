@@ -11,7 +11,10 @@
 
      // Hide loader and show map.
         $("#loader").hide();
+     // leaflet doesn't work with display: none
         $("#mainframe").css("visibility", "visible");
+     // visibility: hidden on mainframe doesn't reach collapse
+        $(".collapse.in").css("visibility", "visible");
 
      // Filter out accidents without location. Socrata doesn't seem
      // to understand `$where=coordinates IS NOT NULL`.
