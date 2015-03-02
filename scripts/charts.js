@@ -7,7 +7,8 @@
     }, function (err, result) {
 
         var data, coordinates, years, monthNames, months, days, dayOfWeekNames,
-            daysOfWeek, baseLayer, clusterLayer, map, redraw, chartColor, charts;
+            daysOfWeek, baseLayer, clusterLayer, map, updateActiveSectionFilters,
+            redraw, chartColor, charts;
 
      // Hide loader and show map.
         $("#loader").hide();
@@ -74,6 +75,34 @@
             layers: [baseLayer, clusterLayer]
         });
 
+        updateActiveSectionFilters = function () {
+            $(".active-filters").each(function () {
+                var filters, section, sectionCharts;
+                filters = [];
+                section = $(this).data("filter-section");
+                if (section === "date") {
+                    sectionCharts = {
+                        yearSelector: "Year",
+                        monthSelector: "Month",
+                        daySelector: "Day",
+                        dayOfWeekSelector: "Day of Week"
+                    };
+                }
+                Object.keys(sectionCharts).forEach(function (chartName) {
+                    var chart;
+                    chart = charts[chartName];
+                    if (chart.hasFilter() === true) {
+                        filters.push(sectionCharts[chartName] + ": " + chart.filters().join(", "));
+                    }
+                });
+                if (filters.length > 0) {
+                    $(this).html(" | " + filters.join("; "));
+                } else {
+                    $(this).html("");
+                }
+            });
+        };
+
         redraw = function () {
             clusterLayer.clearLayers();
             coordinates.top(Infinity).forEach(function (record) {
@@ -95,7 +124,10 @@
                                return d.value;
                             })
                            .colors(chartColor)
-                           .on("filtered", redraw);
+                           .on("filtered", function () {
+                               updateActiveSectionFilters();
+                               redraw();
+                            });
 
         charts.monthSelector = dc.rowChart("#month-selector");
         charts.monthSelector.height(336)
@@ -115,7 +147,10 @@
                                 bottom: 30,
                                 right: 10
                              })
-                            .on("filtered", redraw);
+                            .on("filtered", function () {
+                                updateActiveSectionFilters();
+                                redraw();
+                             });
         charts.monthSelector.xAxis().ticks(4);
 
         charts.daySelector = dc.rowChart("#day-selector");
@@ -136,7 +171,10 @@
                               bottom: 30,
                               right: 10
                            })
-                          .on("filtered", redraw);
+                          .on("filtered", function () {
+                              updateActiveSectionFilters();
+                              redraw();
+                           });
         charts.daySelector.xAxis().ticks(4);
 
         charts.dayOfWeekSelector = dc.rowChart("#day-of-week-selector");
@@ -156,7 +194,10 @@
                                     bottom: 30,
                                     right: 10
                                  })
-                                .on("filtered", redraw);
+                                .on("filtered", function () {
+                                    updateActiveSectionFilters();
+                                    redraw();
+                                 });
         charts.dayOfWeekSelector.xAxis().ticks(4);
 
      // Prepare reset buttons.
