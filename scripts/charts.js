@@ -214,6 +214,9 @@
             dc.redrawAll();
         });
 
+     // Start with 2014 because clustering markers is slow.
+        charts.year.filter(2014);
+
         redraw();
         dc.renderAll();
 
