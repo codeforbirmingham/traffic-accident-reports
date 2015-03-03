@@ -123,9 +123,6 @@
         charts.year = dc.pieChart("#year-selector");
         charts.year.dimension(dimensions.year)
                    .group(dimensions.year.group())
-                   .title(function (d) {
-                       return d.value;
-                    })
                    .colors(chartColor)
                    .on("filtered", function () {
                        updateActiveSectionFilters();
@@ -141,7 +138,7 @@
                         return monthNames[d.key].substr(0, 3);
                      })
                     .title(function (d) {
-                        return d.value;
+                        return monthNames[d.key] + ": " + d.value;
                      })
                     .colors(chartColor)
                     .margins({
@@ -161,11 +158,8 @@
                   .dimension(dimensions.day)
                   .group(dimensions.day.group())
                   .elasticX(true)
-                  .label(function (d) {
-                      return d.key;
-                   })
                   .title(function (d) {
-                      return d.value;
+                      return "Day " + d.key + ": " + d.value;
                    })
                   .colors(chartColor)
                   .margins({
@@ -189,7 +183,7 @@
                             return dayOfWeekNames[d.key].substr(0, 3);
                          })
                         .title(function (d) {
-                            return d.value;
+                            return dayOfWeekNames[d.key] + ": " + d.value;
                          })
                         .colors(chartColor)
                         .margins({
