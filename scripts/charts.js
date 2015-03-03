@@ -8,7 +8,7 @@
 
         var data, dimensions, monthNames, dayOfWeekNames, baseLayer,
             clusterLayer, map, updateActiveSectionFilters, redraw,
-            chartColor, charts;
+            chartColor, charts, rowChartHeight;
 
      // Hide loader and show map.
         $("#loader").hide();
@@ -115,10 +115,10 @@
             });
         };
 
-        chartColor = d3.scale.ordinal().range(["#44afe1"]);
-
      // Prepare charts (charts and dimensions share the same name).
         charts = {};
+        chartColor = d3.scale.ordinal().range(["#44afe1"]);
+        rowChartHeight = 28;
 
         charts.year = dc.pieChart("#year-selector");
         charts.year.dimension(dimensions.year)
@@ -133,7 +133,7 @@
                     });
 
         charts.month = dc.rowChart("#month-selector");
-        charts.month.height(336)
+        charts.month.height(dimensions.month.group().size() * rowChartHeight)
                     .dimension(dimensions.month)
                     .group(dimensions.month.group())
                     .elasticX(true)
@@ -157,7 +157,7 @@
         charts.month.xAxis().ticks(4);
 
         charts.day = dc.rowChart("#day-selector");
-        charts.day.height(868)
+        charts.day.height(dimensions.day.group().size() * rowChartHeight)
                   .dimension(dimensions.day)
                   .group(dimensions.day.group())
                   .elasticX(true)
@@ -181,7 +181,8 @@
         charts.day.xAxis().ticks(4);
 
         charts.dayOfWeek = dc.rowChart("#day-of-week-selector");
-        charts.dayOfWeek.dimension(dimensions.dayOfWeek)
+        charts.dayOfWeek.height(dimensions.dayOfWeek.group().size() * rowChartHeight)
+                        .dimension(dimensions.dayOfWeek)
                         .group(dimensions.dayOfWeek.group())
                         .elasticX(true)
                         .label(function (d) {
