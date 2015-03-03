@@ -2,13 +2,13 @@
     "use strict";
 
     Socrata.query({
-        $select: "location,coordinates,crash_date,day_of_week",
+        $select: "location,coordinates,crash_date,day_of_week,time",
         $limit: Socrata.limit
     }, function (err, result) {
 
-        var data, dimensions, monthNames, dayOfWeekNames, baseLayer,
-            clusterLayer, map, updateActiveSectionFilters, redraw,
-            chartColor, charts, rowChartHeight;
+        var data, dimensions, monthNames, dayOfWeekNames, timeIntervals,
+            baseLayer, clusterLayer, map, updateActiveSectionFilters,
+            redraw, chartColor, charts, rowChartHeight;
 
      // Hide loader and show map.
         $("#loader").hide();
@@ -56,6 +56,11 @@
         dimensions.dayOfWeek = data.dimension(function (record) {
          // Reformat for sorting.
             return dayOfWeekNames.indexOf(record.day_of_week);
+        });
+
+        timeIntervals = ["1:00 AM to 1:59 AM", "2:00 AM to 2:59 AM", "3:00 AM to 3:59 AM", "4:00 AM to 4:59 AM", "5:00 AM to 5:59 AM", "6:00 AM to 6:59 AM", "7:00 AM to 7:59 AM", "8:00 AM to 8:59 AM", "9:00 AM to 9:59 AM", "10:00 AM to 10:59 AM", "11:00 AM to 11:59 AM", "12:00 Noon to 12:59 PM", "1:00 PM to 1:59 PM", "2:00 PM to 2:59 PM", "3:00 PM to 3:59 PM", "4:00 PM to 4:59 PM", "5:00 PM to 5:59 PM", "6:00 PM to 6:59 PM", "7:00 PM to 7:59 PM", "8:00 PM to 8:59 PM", "9:00 PM to 9:59 PM", "10:00 PM to 10:59 PM", "11:00 PM to 11:59 PM", "12:00 Midnight to 12:59 AM"];
+        dimensions.time = data.dimension(function (record) {
+            return timeIntervals.indexOf(record.time);
         });
 
      // Prepare map.
@@ -197,6 +202,40 @@
                             redraw();
                          });
         charts.dayOfWeek.xAxis().ticks(4);
+
+        charts.time = dc.rowChart("#time-selector");
+        charts.time.height(dimensions.time.group().size() * rowChartHeight)
+                   .dimension(dimensions.time)
+                   .group(dimensions.time.group())
+                   .elasticX(true)
+                   .label(function (d) {
+                       if (d.key >= 0) {
+                           return timeIntervals[d.key];
+                       } else {
+                           return "Unknown";
+                       }
+                    })
+                   .title(function (d) {
+                       var label;
+                       if (d.key >= 0) {
+                           label = timeIntervals[d.key];
+                       } else {
+                           label = "Unknown";
+                       }
+                       return label + ": " + d.value;
+                    })
+                   .colors(chartColor)
+                   .margins({
+                       top: 0,
+                       left: 5,
+                       bottom: 30,
+                       right: 10
+                    })
+                   .on("filtered", function () {
+                       updateActiveSectionFilters();
+                       redraw();
+                    });
+        charts.time.xAxis().ticks(4);
 
      // Prepare reset buttons.
         $(".chart a").on("click", function () {
