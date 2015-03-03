@@ -83,22 +83,19 @@
 
         updateActiveSectionFilters = function () {
             $(".active-filters").each(function () {
-                var filters, section, sectionCharts;
+                var filters, sectionCharts, chartLabels;
                 filters = [];
-                section = $(this).data("filter-section");
-                if (section === "date") {
-                    sectionCharts = {
-                        year: "Year",
-                        month: "Month",
-                        day: "Day",
-                        dayOfWeek: "Day of Week"
+                sectionCharts = $(".reset", $(this).parents(".panel")).map(function () {
+                    return {
+                        chart: $(this).data("chart"),
+                        label: $(this).prev().text()
                     };
-                }
-                Object.keys(sectionCharts).forEach(function (chartName) {
+                }).get();
+                sectionCharts.forEach(function (sectionChart) {
                     var chart;
-                    chart = charts[chartName];
-                    if (chart.hasFilter() === true) {
-                        filters.push(sectionCharts[chartName] + ": " + chart.filters().join(", "));
+                    chart = charts[sectionChart.chart];
+                    if (chart !== undefined && chart.hasFilter() === true) {
+                        filters.push(sectionChart.label + ": " + chart.filters().join(", "));
                     }
                 });
                 if (filters.length > 0) {
