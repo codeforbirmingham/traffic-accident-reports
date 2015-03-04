@@ -2,7 +2,7 @@
     "use strict";
 
     Socrata.query({
-        $select: "location,coordinates,crash_date,day_of_week,time",
+        $select: "location,coordinates,crash_date,day_of_week,time,sobriety_alcohol_1,sobriety_drugs_1",
         $limit: Socrata.limit
     }, function (err, result) {
 
@@ -61,6 +61,18 @@
         timeIntervals = ["1:00 AM to 1:59 AM", "2:00 AM to 2:59 AM", "3:00 AM to 3:59 AM", "4:00 AM to 4:59 AM", "5:00 AM to 5:59 AM", "6:00 AM to 6:59 AM", "7:00 AM to 7:59 AM", "8:00 AM to 8:59 AM", "9:00 AM to 9:59 AM", "10:00 AM to 10:59 AM", "11:00 AM to 11:59 AM", "12:00 Noon to 12:59 PM", "1:00 PM to 1:59 PM", "2:00 PM to 2:59 PM", "3:00 PM to 3:59 PM", "4:00 PM to 4:59 PM", "5:00 PM to 5:59 PM", "6:00 PM to 6:59 PM", "7:00 PM to 7:59 PM", "8:00 PM to 8:59 PM", "9:00 PM to 9:59 PM", "10:00 PM to 10:59 PM", "11:00 PM to 11:59 PM", "12:00 Midnight to 12:59 AM"];
         dimensions.time = data.dimension(function (record) {
             return timeIntervals.indexOf(record.time);
+        });
+
+        dimensions.sobriety = data.dimension(function (record) {
+            if (record.sobriety_alcohol_1 === "Yes - Driver Was Under Influence of Alcohol" && record.sobriety_drugs_1 === "Yes - Driver Was Under Influence of Drugs") {
+                return "Both";
+            } else if (record.sobriety_alcohol_1 === "Yes - Driver Was Under Influence of Alcohol" && record.sobriety_drugs_1 !== "Yes - Driver Was Under Influence of Drugs") {
+                return "Alcohol";
+            } else if (record.sobriety_alcohol_1 !== "Yes - Driver Was Under Influence of Alcohol" && record.sobriety_drugs_1 === "Yes - Driver Was Under Influence of Drugs") {
+                return "Drugs";
+            } else {
+                return "Sober";
+            }
         });
 
      // Prepare map.
@@ -236,6 +248,15 @@
                        redraw();
                     });
         charts.time.xAxis().ticks(4);
+
+        charts.sobriety = dc.pieChart("#sobriety-selector");
+        charts.sobriety.dimension(dimensions.sobriety)
+                       .group(dimensions.sobriety.group())
+                       .colors(chartColor)
+                       .on("filtered", function () {
+                           updateActiveSectionFilters();
+                           redraw();
+                        });
 
      // Prepare reset buttons.
         $(".chart a").on("click", function () {
